@@ -25,7 +25,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/songs',[SongController::class,'list'])->name('songs.list');
+Route::get('songs',[SongController::class,'list'])->name('songs.list');
+Route::post('songs',[SongController::class,'list'])->name('songs.filter');
+Route::post('export_data',[SongController::class,'export_data'])->name('songs.export');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

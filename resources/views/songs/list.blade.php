@@ -4,11 +4,20 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Songs List') }}
             </h2>
-            <div>
+            <div class="flex">
                 <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal"
                     data-bs-target="#search-modal">
                     <i class="fa fa-search"></i>Search
                 </button>
+                <form action="{{ route('songs.export') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="label_name" value="{{ request('label_name') }}">
+                    <input type="hidden" name="song_name" value="{{ request('song_name') }}">
+                    <input type="hidden" name="from_song_date" value="{{ request('from_song_date') }}">
+                    <input type="hidden" name="to_song_date" value="{{ request('to_song_date') }}">
+                    <input type="hidden" name="song_status" value="{{ request('song_status') }}">
+                    <button class="btn btn-sm btn-outline-dark" type="submit">Download</button>
+                </form>
             </div>
         </div>
 
@@ -49,48 +58,60 @@
                     <h1 class="modal-title fs-5" id="search-modalLabel">Search</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div>
-                        <div class="row">
-                            <div class="col-sm-6">
+                <form action="{{ route('songs.filter') }}" method="post">
+                    @csrf
+                    <div class="modal-body">
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="label_name">Label Name</label>
+                                    <input type="text" name="label_name" id="label_name" value="">
+                                </div>
+                                <div class="col-sm-6">
 
-                                <label for="label_name">Label Name</label>
-                                <input type="text" name="label_name" id="label_name">
+                                    <label for="song_name">Song Name</label>
+                                    <input type="text" name="song_name" id="song_name" value="">
+                                </div>
                             </div>
-                            <div class="col-sm-6">
 
-                                <label for="song_name">Song Name</label>
-                                <input type="text" name="song_name" id="song_name">
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <label for="song_date">By Date</label>
+                                    <div id="song_date"></div>
+                                    <input type="text" class="date-picker" name="from_song_date" value="01-05-2024">
+                                    <input type="text" class="date-picker" name="to_song_date" value="15-05-2024">
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <label for="song_status">Status</label>
+                                    <select name="song_status" id="song_status">
+                                        <option value="">Select status</option>
+                                        @foreach ($status_list as $status)
+                                            <option value="{{ $status->status_id }}">{{ $status->status_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-sm-6">
-
-                                <label for="song_date">By Date</label>
-                                <input type="text" class="date-picker" name="song_date" id="song_date">
-                            </div>
-                            <div class="col-sm-6">
-
-                                <label for="song_status">Status</label>
-                                <select name="song_status" id="song_status">
-                                    <option value="">Select status</option>
-                                    @foreach ($status_list as $status)
-                                        <option value="{{ $status->id }}">{{ $status->status_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Search</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
     <script>
-        $('.date-picker').datepicker();
+        $('#song_name').datepicker({
+            inputs: $('.date-picker'),
+            clearBtn: true,
+            format: 'dd-mm-yyyy'
+
+        });
     </script>
 </x-app-layout>
